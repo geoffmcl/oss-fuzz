@@ -18,8 +18,9 @@
 
 mkdir -p ${WORK}/tidy-html5
 cd ${WORK}/tidy-html5
+CMAKE_FLAGS="-DCMAKE_C_FLAGS=-fsanitize=address -DTIDY_RC_NUMBER=SN01 -DCMAKE_BUILD_TYPE=Debug"
 
-cmake -GNinja ${SRC}/tidy-html5/
+cmake -GNinja ${SRC}/tidy-html5/ $CMAKE_FLAGS
 ninja
 
 for fuzzer in tidy_config_fuzzer tidy_fuzzer; do
