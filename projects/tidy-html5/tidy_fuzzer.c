@@ -38,6 +38,7 @@ void run_tidy_parser(TidyBuffer* data_buffer,
     tidyRelease(tdoc);
 }
 
+#if 0 /* 00000000000000000000000000000000000 */
 void attach_string_to_buffer(const uint8_t* data,
                              size_t size,
                              TidyBuffer* buffer) {
@@ -50,6 +51,7 @@ void attach_string_to_buffer(const uint8_t* data,
     }
     tidyBufAttach(buffer, (byte*)data_string, strlen(data_string) + 1);
 }
+#endif /* #if 0 - 00000000000000000000000000000000000 */
 
 int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     TidyBuffer data_buffer;
@@ -59,7 +61,9 @@ int LLVMFuzzerTestOneInput(const uint8_t *data, size_t size) {
     tidyBufInit(&output_buffer);
     tidyBufInit(&error_buffer);
 
-    attach_string_to_buffer(data, size, &data_buffer);
+    /* attach_string_to_buffer(data, size, &data_buffer); can be binary data!!! ie has null's */
+    tidyBufAppend( &data_buffer, (void *)data, (uint)size ); /* move data into buffer */
+    
     run_tidy_parser(&data_buffer, &output_buffer, &error_buffer);
     
     tidyBufFree(&error_buffer);
